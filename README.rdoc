@@ -46,8 +46,3 @@ We now have full CRUD on a new Order object.
   new Order.find(id);
   new Order.findBy('name', 'Test Order');
   new Order.findAllBy('name', 'Test Order'); // array
-  
-  
-=== Local Methods
-
-  this.
