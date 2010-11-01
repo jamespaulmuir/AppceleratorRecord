@@ -46,6 +46,13 @@ var AppceleratorRecord = function(args){
 		var SQL = "SELECT * FROM "+ this.tableName +" WHERE " + column + " = \"" + value + "\"";
 		return this.load(SQL);
 	};
+	
+	this.count = function(){
+		var resultSet = this.database.db.execute("SELECT COUNT(*) as count FROM " + this.tableName);
+		var c = resultSet.getFieldByName('count');
+		resultSet.close();
+		return c;
+	};
 
 	this.addLocalMethods = function(localApi){
 		// !!!!!!!!!

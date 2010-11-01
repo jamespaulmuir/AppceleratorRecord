@@ -9,8 +9,12 @@ Any help on this project would be appreciated.
 
 A new model would look like
 
+  //only need to include these once, preferably in a global includes file
+  Titanium.include('helpers/prototype_extensions.js');
+  Titanium.include('helpers/array.js');
   Titanium.include('appcelerator_database.js');
   Titanium.include('appcelerator_record.js');
+
   var Order = function() {
     this.klass = 'Order';
     this.tableName = 'orders';
