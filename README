@@ -1,0 +1,40 @@
+AppceleratorRecord (ActiveRecord for Appcelerator)
+--------------------------------------------
+This project exists in an effort to make it as simple as possible to create models in Appcelerator much like ActiveRecord does for Rails without having to duplicate basic finders and CRUD operations.
+
+Any help on this project would be appreciated.
+
+A new model would look like
+--------------------------------------------
+Titanium.include('appcelerator_database.js');
+Titanium.include('appcelerator_record.js');
+var Order = function() {
+  this.klass = 'Order';
+  this.tableName = 'orders';
+  this.databaseName = 'mydatabase';
+  this.createSQL = "(id integer PRIMARY KEY AUTOINCREMENT DEFAULT NULL, uuid Varchar, name Varchar, placed_at Timestamp)"; //just the columns are needed
+
+  var ar = new AppceleratorRecord({databaseName: this.databaseName, tableName: this.tableName, createSQL: this.createSQL });
+  this.merge(ar);
+  this.addLocalMethods(this);
+  return this;
+};
+--------------------------------------------
+We now have full CRUD on a new Order object.
+--------------------------------------------
+CRUD
+--------------------------------------------
+var o = new Order();
+o.name = "Test Order";
+o.save(); //create
+o.id // would return the new objects id.
+o.name = "Updated Name";
+o.save(); // update
+o.destroy(); // destroy
+
+--------------------------------------------
+Finders
+--------------------------------------------
+new Order.find(id);
+new Order.findBy('name', 'Test Order');
+new Order.findAllBy('name', 'Test Order'); // array
