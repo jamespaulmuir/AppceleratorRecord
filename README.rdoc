@@ -24,6 +24,11 @@ A new model would look like
     var ar = new AppceleratorRecord({databaseName: this.databaseName, tableName: this.tableName, createSQL: this.createSQL });
     this.merge(ar);
     this.addLocalMethods(this);
+    
+    this.orderExists = function(){
+      // custom code here
+    };
+    
     return this;
   };
 We now have full CRUD on a new Order object.
@@ -41,3 +46,8 @@ We now have full CRUD on a new Order object.
   new Order.find(id);
   new Order.findBy('name', 'Test Order');
   new Order.findAllBy('name', 'Test Order'); // array
+  
+  
+=== Local Methods
+
+  this.

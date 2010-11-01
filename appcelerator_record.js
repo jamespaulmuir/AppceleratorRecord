@@ -47,6 +47,11 @@ var AppceleratorRecord = function(args){
 		return this.load(SQL);
 	};
 	
+	this.first = function(){
+		var SQL = "SELECT * FROM "+ this.tableName +" LIMIT 1";
+		return this.load(SQL)[0];
+	};
+	
 	this.count = function(){
 		var resultSet = this.database.db.execute("SELECT COUNT(*) as count FROM " + this.tableName);
 		var c = resultSet.getFieldByName('count');
