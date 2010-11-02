@@ -16,8 +16,7 @@ var AppceleratorRecord = function(args){
 	this.load = function(SQL){
 		var clones = [];
 		var resultSet = this.database.db.execute(SQL);
-		logger("Found " + resultSet.rowCount + " Records");
-		if( resultSet.rowCount == 0 ){ this.errors.push('record not found'); return [this]; };
+		if( resultSet.rowCount == 0 ){ return []; };
     while(resultSet.isValidRow()) {
 			var copy = eval('new ' + this.klass +'()');
 			for(var i=0; i<resultSet.fieldCount(); i++){ copy[resultSet.fieldName(i)] = resultSet.field(i); }
@@ -30,25 +29,37 @@ var AppceleratorRecord = function(args){
 		return clones;
 	};
 
+	this.all = function(id){
+		var SQL = 'SELECT * FROM '+ this.tableName
+		return this.load(SQL);
+	};
+
 	this.find = function(id){
 		var SQL = 'SELECT * FROM '+ this.tableName +' WHERE id = ' + id;
 		return this.load(SQL)[0];
 	};
 	
-	this.findBy = function(column, value){
+	this.findBy = function(column, value, orderBy){
 		//returns single object
 		var SQL = "SELECT * FROM "+ this.tableName +" WHERE " + column + " = \"" + value + "\" LIMIT 1";
+		if( typeof(orderBy) == 'string' ){ SQL+= " ORDER BY " + orderBy; }
 		return this.load(SQL)[0];
 	};
 
-	this.findAllBy = function(column, value){
+	this.findAllBy = function(column, value, orderBy){
 		// returns array
 		var SQL = "SELECT * FROM "+ this.tableName +" WHERE " + column + " = \"" + value + "\"";
+		if( typeof(orderBy) == 'string' ){ SQL+= " ORDER BY " + orderBy; }
 		return this.load(SQL);
 	};
 	
 	this.first = function(){
-		var SQL = "SELECT * FROM "+ this.tableName +" LIMIT 1";
+		var SQL = "SELECT * FROM "+ this.tableName +" ORDER BY id LIMIT 1";
+		return this.load(SQL)[0];
+	};
+
+	this.last = function(){
+		var SQL = "SELECT * FROM "+ this.tableName +" ORDER BY id DESC LIMIT 1";
 		return this.load(SQL)[0];
 	};
 	
@@ -66,32 +77,44 @@ var AppceleratorRecord = function(args){
 		// !!!!!!!!!
 		
 	  localApi.save = function(){
-			(localApi.newRecord == true ? localApi.saveNew() : localApi.saveExisting());
+			(this.newRecord == true ? this.saveNew() : this.saveExisting());
 	  };
 	
 		localApi.saveExisting = function(){
+			var localThis = this; // USE INSIDE OF FUNCTIONS
 			var values = [];
 			var columns = localApi.database.columnNames();
-			columns = columns.select(function(c){ return ( localApi[c] != null );  });
-			columns.each(function(c){  values.push(c + "= \"" + localApi[c] + "\"");  });
-			var SQL = "UPDATE " + localApi.tableName + " SET " + values.join(',') + " WHERE id = " + localApi.id;
+			columns = columns.select(function(c){ return ( localThis[c] != null );  });
+			columns.each(function(c){  values.push(c + "= \"" + localThis[c] + "\"");  });
+			var SQL = "UPDATE " + localApi.tableName + " SET " + values.join(',') + " WHERE id = " + this.id;
 			localApi.database.db.execute(SQL);
 		};
 
 	  localApi.saveNew = function(){
+			var localThis = this; // USE INSIDE OF FUNCTIONS
 			var values = [];
 			var columns = localApi.database.columnNames();
-			columns = columns.select(function(c){ return ( typeof(localApi[c]) != 'undefined' );  });
-			columns.each(function(c){ values.push("\"" + localApi[c] + "\""); });
+			columns = columns.select(function(c){ return ( typeof(localThis[c]) != 'undefined' );  });
+			columns.each(function(c){ values.push("\"" + localThis[c] + "\""); });
 			var SQL = "INSERT INTO " + localApi.tableName + " (" + columns.join(',') + ") VALUES (" + values.join(',') + ")";
-			localApi.database.db.execute(SQL);
-			localApi.newRecord = false;
-			localApi.id = localApi.database.db.lastInsertRowId;
+			this.database.db.execute(SQL);
+			this.newRecord = false;
+			this.id = this.database.db.lastInsertRowId;
 	  };
 	
+		localApi.update = function(column, value){
+			this[column] = value;
+			var SQL = "UPDATE " + localApi.tableName + " SET " + column + " = \"" + value + "\" WHERE id = " + this.id;
+			this.database.db.execute(SQL);
+		};
+	
 		localApi.destroy = function(){
-			var SQL = "DELETE FROM " + localApi.tableName + " WHERE id = " + localApi.id;
+			var SQL = "DELETE FROM " + this.tableName + " WHERE id = " + this.id;
 			localApi.database.db.execute(SQL);
+			
+			if( typeof(this.destroyCallback) == 'function' ){
+				this.destroyCallback();
+			}
 		};
 
 	};

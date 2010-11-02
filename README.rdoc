@@ -40,9 +40,17 @@ We now have full CRUD on a new Order object.
   o.id // would return the new objects id.
   o.name = "Updated Name";
   o.save(); // update
+  o.update('name', 'my updated value'); //update single column
   o.destroy(); // destroy
 
 === Finders
+  new Order.all();
   new Order.find(id);
   new Order.findBy('name', 'Test Order');
   new Order.findAllBy('name', 'Test Order'); // array
+  new Order.first();
+  new Order.last();
+  new Order.count();
+  
+=== Callbacks
+  this.destroyCallback = function(){};

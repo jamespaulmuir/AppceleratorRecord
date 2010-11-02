@@ -22,12 +22,19 @@ var AppceleratorDatabase = function(){
 		this.db.execute(sql);
 		this.tableExists = true;
 	};
+	
+	this.firstColumnValue = function(SQL){
+		var resultSet = this.db.execute(SQL);
+		var x = resultSet.field(0);
+		resultSet.close();
+    return x;
+	};
   
   this.columnNames = function(){
 	
   	var sql = "SELECT * FROM sqlite_master WHERE tbl_name = '"+this.tableName+"'";
   	var resultSet = this.db.execute(sql);
-  	if( !resultSet.isValidRow() ){ logger("INVALID RESULTSET!!"); return; }
+  	if( !resultSet.isValidRow() ){ Ti.API.notice("INVALID RESULTSET!!"); return; }
 		
   	while (resultSet.isValidRow()) {
   		var h = {};
