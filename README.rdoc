@@ -5,6 +5,25 @@ This project exists in an effort to make it as simple as possible to create mode
 
 Any help on this project would be appreciated.
 
+=== Includes
+I use this as a global include file which gets added to each page (THIS IS AN EXAMPLE)
+
+  var pathToRoot = '../';
+  
+  var files = [
+    // helper files
+    'AppceleratorRecord/prototype_extensions.js',
+    'AppceleratorRecord/array.js',
+    'helpers/application.js', // this file doesn't exist, this is an example of another file you could have
+    
+  	//models
+  	'AppceleratorRecord/appcelerator_database.js',
+  	'AppceleratorRecord/appcelerator_record.js',
+  	'models/order.js'
+  ];
+
+  for(var i=0; i<files.length; i++){ Ti.include(pathToRoot + files[i]); }
+
 === Usage
 
 In app.js call your models once to create the database and tables
