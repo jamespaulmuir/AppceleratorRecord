@@ -7,6 +7,10 @@ Any help on this project would be appreciated.
 
 === Usage
 
+In app.js call your models once to create the database and tables
+  new Order();
+  new OtherModel();
+
 A new model would look like
 
   //only need to include these once, preferably in a global includes file
