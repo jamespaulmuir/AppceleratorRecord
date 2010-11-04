@@ -15,11 +15,11 @@ I use this as a global include file which gets added to each page (THIS IS AN EX
     'AppceleratorRecord/prototype_extensions.js',
     'AppceleratorRecord/array.js',
     'helpers/application.js', // this file doesn't exist, this is an example of another file you could have
-    
-  	//models
-  	'AppceleratorRecord/appcelerator_database.js',
-  	'AppceleratorRecord/appcelerator_record.js',
-  	'models/order.js'
+
+    //models
+    'AppceleratorRecord/appcelerator_database.js',
+    'AppceleratorRecord/appcelerator_record.js',
+    'models/order.js'
   ];
 
   for(var i=0; i<files.length; i++){ Ti.include(pathToRoot + files[i]); }
