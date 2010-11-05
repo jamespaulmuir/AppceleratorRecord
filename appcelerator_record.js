@@ -39,16 +39,28 @@ var AppceleratorRecord = function(args){
 		return this.load(SQL)[0];
 	};
 	
-	this.findBy = function(column, value, orderBy){
+	//accepts single values or arrays for the columns & values
+	this.findBy = function(columns, values, orderBy){
+		if( typeof(columns) != 'object' ){ columns = [columns]; values = [values]; }
+		if( columns.length != values.length ){ alert("findBy columns and values arrays do not match lengths"); return null; }
+		var conditions = [];
+		for(var i=0; i<columns.length; i++){ conditions.push( columns[i] + " = \"" + values[i] + "\"" ); }
+		
 		//returns single object
-		var SQL = "SELECT * FROM "+ this.tableName +" WHERE " + column + " = \"" + value + "\" LIMIT 1";
+		var SQL = "SELECT * FROM "+ this.tableName +" WHERE " + conditions.join(' AND ') + " LIMIT 1";
 		if( typeof(orderBy) == 'string' ){ SQL+= " ORDER BY " + orderBy; }
 		return this.load(SQL)[0];
 	};
 
-	this.findAllBy = function(column, value, orderBy){
+	//accepts single values or arrays for the column & value
+	this.findAllBy = function(columns, values, orderBy){
+		if( typeof(columns) != 'object' ){ columns = [columns]; values = [values]; }
+		if( columns.length != values.length ){ alert("findBy columns and values arrays do not match lengths"); return null; }
+		var conditions = [];
+		for(var i=0; i<columns.length; i++){ conditions.push( columns[i] + " = \"" + values[i] + "\"" ); }
+		
 		// returns array
-		var SQL = "SELECT * FROM "+ this.tableName +" WHERE " + column + " = \"" + value + "\"";
+		var SQL = "SELECT * FROM "+ this.tableName +" WHERE " + conditions.join(' AND ');
 		if( typeof(orderBy) == 'string' ){ SQL+= " ORDER BY " + orderBy; }
 		return this.load(SQL);
 	};
