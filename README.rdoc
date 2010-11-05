@@ -47,11 +47,11 @@ A new model would look like
     this.indexes = [
       ['user_id', 'item_id'']
     ];
-    this.newColumns = [
+    this.migrations = [
       ['resource_type', 'varchar'] // Added after release, Nov 4th 2010
     ]; //columns that didn't make it into the initial release.  Use this if your app has already been deployed to production.
 
-    var ar = new AppceleratorRecord({databaseName: this.databaseName, tableName: this.tableName, createSQL: this.createSQL, indexes: this.indexes, newColumns: this.newColumns });
+    var ar = new AppceleratorRecord({databaseName: this.databaseName, tableName: this.tableName, createSQL: this.createSQL, indexes: this.indexes, migrations: this.migrations });
     this.merge(ar);
     this.addLocalMethods(this);
     
@@ -90,5 +90,5 @@ We now have full CRUD on a new Order object.
   See above in the Usage
   
 === Migrations
-  See above in the Usage (newColumns)
+  See above in the Usage
   

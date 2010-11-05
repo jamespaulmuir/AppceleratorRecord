@@ -5,7 +5,7 @@ var AppceleratorRecord = function(args){
 	this.databaseName = args.databaseName;
 	this.tableName = args.tableName;
 	this.indexes = args.indexes || [];
-	this.newColumns = args.newColumns || [];
+	this.migrations = args.migrations || [];
   this.database = new AppceleratorDatabase();
 	this.database.initialize({name: this.databaseName, tableName: this.tableName, createSQL: args.createSQL});
   this.newRecord = true;
@@ -13,7 +13,7 @@ var AppceleratorRecord = function(args){
 	//run init() once! inside of app.js to create the table, columns and indexes
 	this.init = function(){
 		this.database.createTable();
-		this.addNewColumns();
+		this.migrate();
 		this.createIndexes();
 	};
 	
@@ -26,9 +26,9 @@ var AppceleratorRecord = function(args){
 		});
 	};
 	
-	this.addNewColumns = function(){
+	this.migrate = function(){
 		var localThis = this; // USE INSIDE OF FUNCTIONS
-		this.newColumns.each(function(column){ localThis.addColumn(column[0], column[1]); });
+		this.migrations.each(function(column){ localThis.addColumn(column[0], column[1]); });
 	};
 	
 	this.addColumn = function(column, type){
