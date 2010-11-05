@@ -43,8 +43,14 @@ A new model would look like
     this.tableName = 'orders';
     this.databaseName = 'mydatabase';
     this.createSQL = "(id integer PRIMARY KEY AUTOINCREMENT DEFAULT NULL, uuid Varchar, name Varchar, placed_at Timestamp)"; //just the columns are needed
+    this.indexes = [
+      ['user_id', 'item_id'']
+    ];
+    this.newColumns = [
+      ['resource_type', 'varchar'] // Added after release, Nov 4th 2010
+    ]; //columns that didn't make it into the initial release.  Use this if your app has already been deployed to production.
 
-    var ar = new AppceleratorRecord({databaseName: this.databaseName, tableName: this.tableName, createSQL: this.createSQL });
+    var ar = new AppceleratorRecord({databaseName: this.databaseName, tableName: this.tableName, createSQL: this.createSQL, indexes: this.indexes, newColumns: this.newColumns });
     this.merge(ar);
     this.addLocalMethods(this);
     
@@ -78,3 +84,10 @@ We now have full CRUD on a new Order object.
   
 === Callbacks
   this.destroyCallback = function(){}; // runs after a destroy is called
+  
+=== Indexes
+  See above in the Usage
+  
+=== Migrations
+  See above in the Usage (newColumns)
+  

@@ -4,14 +4,38 @@ var AppceleratorRecord = function(args){
 	this.errors = [];
 	this.databaseName = args.databaseName;
 	this.tableName = args.tableName;
+	this.indexes = args.indexes || [];
+	this.newColumns = args.newColumns || [];
   this.database = new AppceleratorDatabase();
 	this.database.initialize({name: this.databaseName, tableName: this.tableName, createSQL: args.createSQL});
   this.newRecord = true;
 	
+	//run init() once! inside of app.js to create the table, columns and indexes
+	this.init = function(){
+		this.database.createTable();
+		this.addNewColumns();
+		this.createIndexes();
+	};
 	
-  this.createTable = function(){
-    this.db.execute(this.createSQL);
-  };
+	this.createIndexes = function(){
+		var localThis = this; // USE INSIDE OF FUNCTIONS
+		this.indexes.each(function(columns){
+			var index_name = columns.join('_');
+			var SQL = "CREATE INDEX IF NOT EXISTS " + index_name + " ON " + localThis.tableName + "(" + columns.join(', ') + ");";
+			localThis.database.db.execute(SQL);
+		});
+	};
+	
+	this.addNewColumns = function(){
+		var localThis = this; // USE INSIDE OF FUNCTIONS
+		this.newColumns.each(function(column){ localThis.addColumn(column[0], column[1]); });
+	};
+	
+	this.addColumn = function(column, type){
+		if( this.database.columnExists(column) ){ return; }
+		var SQL = "ALTER TABLE " + this.tableName + " ADD "+ column+ " " + type;
+		this.database.db.execute(SQL);
+	};
 	
 	this.load = function(SQL){
 		var clones = [];

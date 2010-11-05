@@ -6,21 +6,18 @@ var AppceleratorDatabase = function(){
   this.db = null;
 	this.createSQL = null;
 	this.databaseExists = false;
-	this.tableExists = false;
 
 	this.initialize = function(args){
 		this.tableName = args.tableName;
 		this.name = args.name;
 		this.createSQL = args.createSQL;
+		this.indexes = args.indexes;
 		this.db = Ti.Database.open(this.name);
-		this.databaseExists = true;
-		if( !this.tableExists ){ this.createTable(); }
 	};
 	
 	this.createTable = function(){
-		var sql = "CREATE TABLE IF NOT EXISTS " + this.tableName + ' ' + this.createSQL;
-		this.db.execute(sql);
-		this.tableExists = true;
+		var SQL = "CREATE TABLE IF NOT EXISTS " + this.tableName + ' ' + this.createSQL;
+		this.db.execute(SQL);
 	};
 	
 	this.firstColumnValue = function(SQL){
@@ -31,9 +28,8 @@ var AppceleratorDatabase = function(){
 	};
   
   this.columnNames = function(){
-	
-  	var sql = "SELECT * FROM sqlite_master WHERE tbl_name = '"+this.tableName+"'";
-  	var resultSet = this.db.execute(sql);
+  	var SQL = "SELECT * FROM sqlite_master WHERE tbl_name = '"+this.tableName+"' AND sql LIKE 'CREATE TABLE%'";
+  	var resultSet = this.db.execute(SQL);
   	if( !resultSet.isValidRow() ){ Ti.API.notice("INVALID RESULTSET!!"); return; }
 		
   	while (resultSet.isValidRow()) {
@@ -42,7 +38,6 @@ var AppceleratorDatabase = function(){
     	resultSet.next();
     }
 
-
   	var columns = [];
   	h.sql.match(/\({1}.*\){1}/)[0].replace('(', '').replace(')','').split(/,/).each(function(c){
   		columns.push( c.match(/\s*(\w*)\s/)[0].match(/\s*([a-zA-Z_]*)/)[0].replace(' ', '') );
@@ -50,6 +45,10 @@ var AppceleratorDatabase = function(){
 	
   	return columns;
   };
+
+	this.columnExists = function(column){
+		return this.columnNames().indexOf(column) >= 0;
+	};
   
   return this;
 
