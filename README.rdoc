@@ -27,8 +27,9 @@ I use this as a global include file which gets added to each page (THIS IS AN EX
 === Usage
 
 In app.js call your models once to create the database and tables
-  new Order();
-  new OtherModel();
+  var models = [new Order(), new OtherModel()];
+  models.each(function(model){ model.init(); }); //run init() once! inside of app.js to create the table, columns and indexes
+  
 
 A new model would look like
 
