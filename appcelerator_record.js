@@ -68,7 +68,13 @@ var AppceleratorRecord = function(args){
 		if( typeof(columns) != 'object' ){ columns = [columns]; values = [values]; }
 		if( columns.length != values.length ){ alert("findBy columns and values arrays do not match lengths"); return null; }
 		var conditions = [];
-		for(var i=0; i<columns.length; i++){ conditions.push( columns[i] + " = \"" + values[i] + "\"" ); }
+		for(var i=0; i<columns.length; i++){ 
+			if( typeof(values[i]) == 'string' && (values[i].toUpperCase() == 'IS NULL' || values[i].toUpperCase() == 'IS NOT NULL') ){
+				conditions.push( columns[i] + ' ' + values[i] );
+			}else{
+				conditions.push( columns[i] + " = \"" + values[i] + "\"" );
+			}
+		}
 		
 		//returns single object
 		var SQL = "SELECT * FROM "+ this.tableName +" WHERE " + conditions.join(' AND ') + " LIMIT 1";
@@ -81,12 +87,31 @@ var AppceleratorRecord = function(args){
 		if( typeof(columns) != 'object' ){ columns = [columns]; values = [values]; }
 		if( columns.length != values.length ){ alert("findBy columns and values arrays do not match lengths"); return null; }
 		var conditions = [];
-		for(var i=0; i<columns.length; i++){ conditions.push( columns[i] + " = \"" + values[i] + "\"" ); }
+		for(var i=0; i<columns.length; i++){ 
+			if( typeof(values[i]) == 'string' && (values[i].toUpperCase() == 'IS NULL' || values[i].toUpperCase() == 'IS NOT NULL') ){
+				conditions.push( columns[i] + ' ' + values[i] );
+			}else{
+				conditions.push( columns[i] + " = \"" + values[i] + "\"" );
+			}
+		}
 		
 		// returns array
 		var SQL = "SELECT * FROM "+ this.tableName +" WHERE " + conditions.join(' AND ');
 		if( typeof(orderBy) == 'string' ){ SQL+= " ORDER BY " + orderBy; }
 		return this.load(SQL);
+	};
+	
+	this.findOrCreateBy = function(columns, values, orderBy){
+		var r = this.findBy(columns, values, orderBy);
+		if( r != null ){ return r; }
+		var copy = eval('new ' + this.klass +'()');
+		for(var i=0; i<columns.length; i++){
+			if( !(values[i].toUpperCase() == 'IS NULL' || values[i].toUpperCase() == 'IS NOT NULL') ){
+				copy[columns[i]] = values[i];
+			}
+		}
+		copy.save();
+		return copy;
 	};
 	
 	this.first = function(){

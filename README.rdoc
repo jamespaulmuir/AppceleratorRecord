@@ -79,10 +79,11 @@ We now have full CRUD on a new Order object.
   new Order().findBy('name', 'Test Order');
   new Order().findAllBy('name', 'Test Order'); // array
   new Order().findAllBy(['name', 'user_id'], ['Test Order', 1]); // accepts multiple conditions
+  new Order().findBy('uuid', 'IS NULL'); //find by null/is not null
   new Order().first();
   new Order().last();
   new Order().count();
-  
+  new Order().findOrCreateBy(['name'], ['myValue']); // find or create new object
 === Callbacks
   this.destroyCallback = function(){}; // runs after a destroy is called
   
@@ -92,3 +93,5 @@ We now have full CRUD on a new Order object.
 === Migrations
   See above in the Usage
   
+=== To Do
+  new Order.sum('columnName');
