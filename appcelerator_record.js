@@ -130,6 +130,10 @@ var AppceleratorRecord = function(args){
 		resultSet.close();
 		return c;
 	};
+	
+	this.destroyAll = function(){
+		this.database.execute("DELETE FROM " + this.tableName);
+	};
 
 	this.addLocalMethods = function(localApi){
 		// !!!!!!!!!

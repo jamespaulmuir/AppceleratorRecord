@@ -84,6 +84,10 @@ We now have full CRUD on a new Order object.
   new Order().last();
   new Order().count();
   new Order().findOrCreateBy(['name'], ['myValue']); // find or create new object
+  
+=== Destroyers
+  new Order().destroyAll();
+  
 === Callbacks
   this.destroyCallback = function(){}; // runs after a destroy is called
   
