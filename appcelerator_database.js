@@ -15,13 +15,18 @@ var AppceleratorDatabase = function(){
 		this.db = Ti.Database.open(this.name);
 	};
 	
+	this.execute = function(SQL){
+		if( typeof(AppceleratorRecordConfig) != 'undefined' && AppceleratorRecordConfig.logging == true ){ Ti.API.notice(SQL); }
+		return this.db.execute(SQL);
+	};
+	
 	this.createTable = function(){
 		var SQL = "CREATE TABLE IF NOT EXISTS " + this.tableName + ' ' + this.createSQL;
-		this.db.execute(SQL);
+		this.execute(SQL);
 	};
 	
 	this.firstColumnValue = function(SQL){
-		var resultSet = this.db.execute(SQL);
+		var resultSet = this.execute(SQL);
 		var x = resultSet.field(0);
 		resultSet.close();
     return x;
@@ -29,7 +34,7 @@ var AppceleratorDatabase = function(){
   
   this.columnNames = function(){
   	var SQL = "SELECT * FROM sqlite_master WHERE tbl_name = '"+this.tableName+"' AND sql LIKE 'CREATE TABLE%'";
-  	var resultSet = this.db.execute(SQL);
+  	var resultSet = this.execute(SQL);
   	if( !resultSet.isValidRow() ){ Ti.API.notice("INVALID RESULTSET!!"); return; }
 		
   	while (resultSet.isValidRow()) {

@@ -93,5 +93,10 @@ We now have full CRUD on a new Order object.
 === Migrations
   See above in the Usage
   
+=== Database Logging
+You can set a global variable to enable database logging which will print all SQL calls to the Titanium Developer console
+
+  var AppceleratorRecordConfig = { logging: false }; // enable Database Logging
+
 === To Do
   new Order.sum('columnName');

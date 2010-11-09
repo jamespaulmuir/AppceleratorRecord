@@ -22,7 +22,7 @@ var AppceleratorRecord = function(args){
 		this.indexes.each(function(columns){
 			var index_name = columns.join('_');
 			var SQL = "CREATE INDEX IF NOT EXISTS " + index_name + " ON " + localThis.tableName + "(" + columns.join(', ') + ");";
-			localThis.database.db.execute(SQL);
+			localThis.database.execute(SQL);
 		});
 	};
 	
@@ -34,12 +34,12 @@ var AppceleratorRecord = function(args){
 	this.addColumn = function(column, type){
 		if( this.database.columnExists(column) ){ return; }
 		var SQL = "ALTER TABLE " + this.tableName + " ADD "+ column+ " " + type;
-		this.database.db.execute(SQL);
+		this.database.execute(SQL);
 	};
 	
 	this.load = function(SQL){
 		var clones = [];
-		var resultSet = this.database.db.execute(SQL);
+		var resultSet = this.database.execute(SQL);
 		if( resultSet.rowCount == 0 ){ return []; };
     while(resultSet.isValidRow()) {
 			var copy = eval('new ' + this.klass +'()');
@@ -125,7 +125,7 @@ var AppceleratorRecord = function(args){
 	};
 	
 	this.count = function(){
-		var resultSet = this.database.db.execute("SELECT COUNT(*) as count FROM " + this.tableName);
+		var resultSet = this.database.execute("SELECT COUNT(*) as count FROM " + this.tableName);
 		var c = resultSet.getFieldByName('count');
 		resultSet.close();
 		return c;
@@ -148,7 +148,7 @@ var AppceleratorRecord = function(args){
 			columns = columns.select(function(c){ return ( localThis[c] != null );  });
 			columns.each(function(c){  values.push(c + "= \"" + localThis[c] + "\"");  });
 			var SQL = "UPDATE " + localApi.tableName + " SET " + values.join(',') + " WHERE id = " + this.id;
-			localApi.database.db.execute(SQL);
+			localApi.database.execute(SQL);
 		};
 
 	  localApi.saveNew = function(){
@@ -158,7 +158,7 @@ var AppceleratorRecord = function(args){
 			columns = columns.select(function(c){ return ( typeof(localThis[c]) != 'undefined' );  });
 			columns.each(function(c){ values.push("\"" + localThis[c] + "\""); });
 			var SQL = "INSERT INTO " + localApi.tableName + " (" + columns.join(',') + ") VALUES (" + values.join(',') + ")";
-			this.database.db.execute(SQL);
+			this.database.execute(SQL);
 			this.newRecord = false;
 			this.id = this.database.db.lastInsertRowId;
 	  };
@@ -166,12 +166,12 @@ var AppceleratorRecord = function(args){
 		localApi.update = function(column, value){
 			this[column] = value;
 			var SQL = "UPDATE " + localApi.tableName + " SET " + column + " = \"" + value + "\" WHERE id = " + this.id;
-			this.database.db.execute(SQL);
+			this.database.execute(SQL);
 		};
 	
 		localApi.destroy = function(){
 			var SQL = "DELETE FROM " + this.tableName + " WHERE id = " + this.id;
-			localApi.database.db.execute(SQL);
+			localApi.database.execute(SQL);
 			
 			if( typeof(this.destroyCallback) == 'function' ){
 				this.destroyCallback();
