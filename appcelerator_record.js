@@ -131,8 +131,14 @@ var AppceleratorRecord = function(args){
 		return c;
 	};
 	
-	this.destroyAll = function(){
-		this.database.execute("DELETE FROM " + this.tableName);
+	this.destroyAll = function(columns, values){
+		if( typeof(columns) == 'undefined' ){ //simple destroy all
+			this.database.execute("DELETE FROM " + this.tableName);
+		}else{ // find all and then destroy those
+			var ids = this.findAllBy(columns, values).collect(function(r){ return r.id; });
+			if(ids.length == 0){ return; }
+			this.database.execute("DELETE FROM " + this.tableName + " WHERE id IN (" + ids.join(',') + ")");
+		}
 	};
 
 	this.addLocalMethods = function(localApi){

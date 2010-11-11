@@ -87,6 +87,7 @@ We now have full CRUD on a new Order object.
   
 === Destroyers
   new Order().destroyAll();
+  new Order().destroyAll(['user_id'], [123]); //uses findAllBy()
   
 === Callbacks
   this.destroyCallback = function(){}; // runs after a destroy is called
