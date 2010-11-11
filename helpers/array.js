@@ -13,3 +13,7 @@ if(typeof Array.prototype.unshift==='undefined'){Array.prototype.unshift=functio
 
 Array.select = function(a, fn){ var new_array = new Array(); a.each(function(e){ if(fn(e)){ new_array.push(e); } }); return new_array; };
 Array.prototype.select = function(fn){ return Array.select(this, fn); };
+Array.collect = function(a, fn){ var new_array = new Array(); a.each(function(e){ new_array.push(fn(e)); }); return new_array;};
+Array.prototype.collect = function(fn){ return Array.collect(this, fn); };
+// Array Remove - By John Resig (MIT Licensed)
+Array.prototype.remove = function(from, to) {var rest = this.slice((to || from) + 1 || this.length); this.length = from < 0 ? this.length + from : from; return this.push.apply(this, rest); };
