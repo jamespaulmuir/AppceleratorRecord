@@ -54,7 +54,7 @@ var AppceleratorRecord = function(args){
 	};
 
 	this.all = function(id){
-		var SQL = 'SELECT * FROM '+ this.tableName
+		var SQL = 'SELECT * FROM '+ this.tableName;
 		return this.load(SQL);
 	};
 
