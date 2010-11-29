@@ -83,6 +83,7 @@ We now have full CRUD on a new Order object.
   new Order().first();
   new Order().last();
   new Order().count();
+  new Order().count(['name', 'user_id'], ['Test Order', 1]); // accepts multiple conditions
   new Order().findOrCreateBy(['name'], ['myValue']); // find or create new object
   
 === Destroyers

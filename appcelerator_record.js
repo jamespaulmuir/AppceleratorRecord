@@ -124,8 +124,20 @@ var AppceleratorRecord = function(args){
 		return this.load(SQL)[0];
 	};
 	
-	this.count = function(){
-		var resultSet = this.database.execute("SELECT COUNT(*) as count FROM " + this.tableName);
+	this.count = function(columns, values){
+		if( typeof(columns) == 'undefined' ){ columns = []; values = []; }
+		if( typeof(columns) != 'object' ){ columns = [columns]; values = [values]; }
+		if( columns.length != values.length ){ alert("findBy columns and values arrays do not match lengths"); return null; }
+		var conditions = ['1'];
+		for(var i=0; i<columns.length; i++){ 
+			if( typeof(values[i]) == 'string' && (values[i].toUpperCase() == 'IS NULL' || values[i].toUpperCase() == 'IS NOT NULL') ){
+				conditions.push( columns[i] + ' ' + values[i] );
+			}else{
+				conditions.push( columns[i] + " = \"" + values[i] + "\"" );
+			}
+		}
+
+		var resultSet = this.database.execute("SELECT COUNT(*) as count FROM " + this.tableName + " WHERE " + conditions.join(' AND '));
 		var c = resultSet.getFieldByName('count');
 		resultSet.close();
 		return c;
